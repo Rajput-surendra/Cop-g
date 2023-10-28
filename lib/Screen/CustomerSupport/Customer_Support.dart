@@ -115,6 +115,7 @@ class _CustomerSupportState extends State<CustomerSupport>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar:
           getSimpleAppBar(getTranslated(context, 'CUSTOMER_SUPPORT')!, context),
       floatingActionButton: AnimatedOpacity(

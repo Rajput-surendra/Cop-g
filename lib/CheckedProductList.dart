@@ -73,6 +73,7 @@ class _CheckedProductListState extends State<CheckedProductList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: getSimpleAppBar(getTranslated(context, 'checked_products')!, context),
       body: loading == true
           ? Center(

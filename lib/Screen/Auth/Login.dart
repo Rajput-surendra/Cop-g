@@ -735,8 +735,9 @@ class _LoginPageState extends State<Login> with TickerProviderStateMixin {
       return false;
     },
       child: Scaffold(
+        backgroundColor: colors.primary,
         resizeToAvoidBottomInset: true,
-        backgroundColor: Theme.of(context).colorScheme.white,
+      //  backgroundColor: Theme.of(context).colorScheme.white,
         key: _scaffoldKey,
         body: isNetworkAvail
             ? SingleChildScrollView(

@@ -94,17 +94,18 @@ class _ModelScreenState extends State<ModelScreen> {
         // appBar: getSimpleAppBar(getTranslated(context, 'MODEL')!, context),
         body: Column(
           children: [
-            SizedBox(height: 20,),
+            SizedBox(height: 2,),
             Container(
-              height: 100,
+              height: 110,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.lightWhite,
+                  color:
+                Theme.of(context).colorScheme.lightWhite,
                   borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10))
               ),
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10,top: 10),
                     child: Row(
                       children: [
                         InkWell(
@@ -121,7 +122,7 @@ class _ModelScreenState extends State<ModelScreen> {
                   SizedBox(height: 10,),
                   Padding(
                     padding: const EdgeInsets.only(left: 20,right: 20),
-                    child: Image.asset("assets/images/model.png",height: 50,),
+                    child: Image.asset("assets/images/model.png",height: 50,color: colors.whiteTemp,),
                   ),
                   Divider(
                     color: colors.black54.withOpacity(0.2),
@@ -147,6 +148,7 @@ class _ModelScreenState extends State<ModelScreen> {
             )
                 :
             Container(
+              color: colors.primary,
               height: MediaQuery.of(context).size.height/1.3,
 
               child: ListView.builder(

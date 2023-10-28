@@ -95,6 +95,7 @@ class StateWallet extends State<MyWallet> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       key: _scaffoldKey,
       appBar: AppBar(
         titleSpacing: 0,

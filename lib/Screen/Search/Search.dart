@@ -219,6 +219,7 @@ class _SearchState extends State<Search> with TickerProviderStateMixin {
     userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
+      backgroundColor: colors.primary,
       key: _scaffoldKey,
       appBar: AppBar(
         leading:

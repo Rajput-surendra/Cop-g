@@ -62,6 +62,7 @@ class _BiddingProductConfirmState extends State<BiddingProductConfirm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       bottomSheet: InkWell(
         onTap: (){
           if(_formKey.currentState!.validate()){
@@ -80,7 +81,8 @@ class _BiddingProductConfirmState extends State<BiddingProductConfirm> {
           ),
         ),
       ),
-      backgroundColor:  Theme.of(context).colorScheme.blackTxtColor,
+      backgroundColor: colors.primary,
+      //Theme.of(context).colorScheme.blackTxtColor,
       appBar: getSimpleAppBar(getTranslated(context, 'BIDDING_PRODUCT')!, context),
       body: Form(
         key:_formKey ,

@@ -28,6 +28,7 @@ class StateSuccess extends State<OrderSuccess> {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: getAppBar(
           getTranslated(context, 'ORDER_PLACED')!, context, setStateNow, false),
       body: Center(

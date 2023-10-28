@@ -25,6 +25,7 @@ class _MyBidsState extends State<MyBids> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: getSimpleAppBar(getTranslated(context, 'BIDDING_PRODUCT_LIST')!, context),
       body: DefaultTabController(
         length: 2,

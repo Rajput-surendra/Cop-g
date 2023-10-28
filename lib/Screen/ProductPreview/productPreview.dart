@@ -97,6 +97,7 @@ class StatePreview extends State<ProductPreview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       body: Hero(
         tag: widget.list!
             ? '$heroTagUniqueString${widget.id}'

@@ -332,6 +332,7 @@ class StateProfile extends State<MyProfile> with TickerProviderStateMixin {
     SettingProvider settingsProvider = Provider.of<SettingProvider>(context, listen: false);
 
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor:  Theme.of(context).colorScheme.white,

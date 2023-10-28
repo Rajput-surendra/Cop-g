@@ -326,6 +326,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: widget.fromBottom
           ? null
           : getSimpleAppBar(getTranslated(context, 'CART')!, context),
@@ -1295,6 +1296,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.8),
               child: Scaffold(
+                backgroundColor: colors.primary,
                 resizeToAvoidBottomInset: false,
                 key: _checkscaffoldKey,
                 body: isNetworkAvail

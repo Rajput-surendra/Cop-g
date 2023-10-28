@@ -44,7 +44,8 @@ class _FaqsListState extends State<FaqsList> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.white,
+      backgroundColor: colors.primary,
+      //backgroundColor: Theme.of(context).colorScheme.white,
       key: _scaffoldKey,
       appBar: getSimpleAppBar(getTranslated(context, 'FAQS')!, context),
       body: Consumer<FaqsProvider>(

@@ -27,7 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
@@ -60,9 +60,6 @@ import '../homePage/widgets/section.dart';
 import '../homePage/widgets/slider.dart';
 import 'dart:convert' as convert;
 
-
-
-
 class CopGScreen extends StatefulWidget {
   const CopGScreen({Key? key}) : super(key: key);
 
@@ -72,7 +69,6 @@ class CopGScreen extends StatefulWidget {
 
 class _CopGScreenState extends State<CopGScreen>
     with AutomaticKeepAliveClientMixin<CopGScreen>, TickerProviderStateMixin {
-
   late TabController tabController;
 
   var latitude;
@@ -85,13 +81,13 @@ class _CopGScreenState extends State<CopGScreen>
   late AnimationController buttonController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
   var db = DatabaseHelper();
   final ScrollController _scrollBottomBarController = ScrollController();
   DateTime? currentBackPressTime;
   ApiBaseHelper apiBaseHelper = ApiBaseHelper();
   int count = 1;
-  int category_length=0;
+  int category_length = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -102,7 +98,7 @@ class _CopGScreenState extends State<CopGScreen>
 
   setSnackBarFunctionForCartMessage() {
     Future.delayed(const Duration(seconds: 6)).then(
-          (value) {
+      (value) {
         if (homePageSingleSellerMessage) {
           homePageSingleSellerMessage = false;
           showOverlay(
@@ -116,31 +112,32 @@ class _CopGScreenState extends State<CopGScreen>
   }
 
   CategoriesData? categoriesData;
-  bool isLoading=true;
-   getCategories() async {
+  bool isLoading = true;
 
-     var response = await http.post(Uri.parse('$baseUrl/get_categories'), body: {});
-     var jsonResponse = convert.jsonDecode(response.body);
+  getCategories() async {
+    var response =
+        await http.post(Uri.parse('$baseUrl/get_categories'), body: {});
+    var jsonResponse = convert.jsonDecode(response.body);
 
-     if (jsonResponse['error'] == false) {
-       var finalResult = CategoriesData.fromJson(jsonResponse);
+    if (jsonResponse['error'] == false) {
+      var finalResult = CategoriesData.fromJson(jsonResponse);
 
-       setState(() {
-         categoriesData = finalResult;
+      setState(() {
+        categoriesData = finalResult;
+      });
 
-       });
+      if (categoriesData?.data.length != 0) {
+        category_length = categoriesData!.data.length;
 
-       if(categoriesData?.data.length != 0) {
-         category_length = categoriesData!.data.length;
+        tabController = TabController(length: category_length, vsync: this);
+      }
+      print(
+          'get_categories_response______________${categoriesData?.data.first.name}_________');
+    }
 
-         tabController = TabController(length: category_length, vsync: this);
-       }
-       print('get_categories_response______________${categoriesData?.data.first.name}_________');
-     }
+    getProductsApi(0);
 
-     getProductsApi(0);
-
-///old
+    ///old
     // var headers = {
     //   'Cookie': 'ci_session=453c82cf282c7397cb80d7e3cd77a15383df89d4'
     // };
@@ -165,32 +162,32 @@ class _CopGScreenState extends State<CopGScreen>
     // }
   }
 
-  List ProductList=[];
-  List<Product> tempList=[];
-  getProductsApi(int index) async{
+  List ProductList = [];
+  List<Product> tempList = [];
+
+  getProductsApi(int index) async {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
-     Map<String, dynamic> params ={
-       'category_id': categoriesData?.data[index].id.toString()
-     };
+    Map<String, dynamic> params = {
+      'category_id': categoriesData?.data[index].id.toString()
+    };
 
     var response = await http.post(getProductApi, body: params);
     var jsonResponse = convert.jsonDecode(response.body);
 
     if (jsonResponse['error'] == false) {
-  tempList =
-      (jsonResponse['data'] as List).map((data) => Product.fromJson(data)).toList();
+      tempList = (jsonResponse['data'] as List)
+          .map((data) => Product.fromJson(data))
+          .toList();
 
       context.read<HomePageProvider>().getFav(context, setStateNow);
 
       ProductList = jsonResponse['data'];
       setState(() {
-        isLoading=false;
+        isLoading = false;
       });
-
     }
-
   }
 
   // GetSellerModel?getSellerModel;
@@ -215,7 +212,6 @@ class _CopGScreenState extends State<CopGScreen>
   //   }
   //
   // }
-
 
   Future<void> getCurrentLoc() async {
     LocationPermission permission;
@@ -242,39 +238,32 @@ class _CopGScreenState extends State<CopGScreen>
       setState(() {
         pinController.text = placemark[0].postalCode!;
         currentAddress.text =
-        "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
+            "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
         latitude = position.latitude.toString();
         longitude = position.longitude.toString();
         // loc.lng = position.longitude.toString();
         //loc.lat = position.latitude.toString();
-
-
       });
-
     }
   }
 
-
-
+  var name;
 
   @override
   void initState() {
     getCategories();
-
-
-
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
-
     SettingProvider setting =
-    Provider.of<SettingProvider>(context, listen: false);
+        Provider.of<SettingProvider>(context, listen: false);
     user.setMobile(setting.mobile);
-    user.setName(setting.userName);
+    name = setting.userName;
+    print('__________${name}_________');
     user.setEmail(setting.email);
+
     user.setProfilePic(setting.profileUrl);
     Future.delayed(Duration.zero).then(
-          (value) {
+      (value) {
         callApi();
-
       },
     );
 
@@ -297,7 +286,7 @@ class _CopGScreenState extends State<CopGScreen>
     );
     setSnackBarFunctionForCartMessage();
     Future.delayed(Duration.zero).then(
-          (value) {
+      (value) {
         hideAppbarAndBottomBarOnScroll(
           _scrollBottomBarController,
           context,
@@ -312,21 +301,36 @@ class _CopGScreenState extends State<CopGScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.white,
         leading: GestureDetector(
-            onTap: (){
+            onTap: () {
               _scaffoldKey.currentState?.openDrawer();
             },
-            child: Icon(Icons.menu,color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5),)),
-        title:SvgPicture.asset(
-          DesignConfiguration.setSvgPath('homelogo'),
-          height: 40,
+            child: Icon(
+              Icons.menu,
+              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5),
+            )),
+        title: Column(
+          children: [
+            Text(
+              "Welcome!",
+              style: TextStyle(fontSize: 15),
+            ),
+            Text(
+              "${name}",
+              style: TextStyle(fontSize: 15),
+            ),
+          ],
         ),
+        // SvgPicture.asset(
+        //   DesignConfiguration.setSvgPath('homelogo'),
+        //   height: 40,
+        // ),
         titleSpacing: 0,
-        toolbarHeight:120,
+        toolbarHeight: 70,
         actions: <Widget>[
           Selector<UserProvider, String>(
             builder: (context, data, child) {
@@ -343,36 +347,47 @@ class _CopGScreenState extends State<CopGScreen>
                       ),
                       (data.isNotEmpty && data != '0')
                           ? Positioned(
-                        bottom: 20,
-                        right: 0,
-                        child: Container(
-                          decoration:  BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context).colorScheme.txtColor,
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(3),
-                              child: Text(
-                                data,
-                                style:  TextStyle(
-                                  fontSize: textFontSize10,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'ubuntu',
-                                  color: Theme.of(context).colorScheme.blackTxtColor,
+                              bottom: 20,
+                              right: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context).colorScheme.txtColor,
+                                ),
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3),
+                                    child: Text(
+                                      data,
+                                      style: TextStyle(
+                                        fontSize: textFontSize10,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'ubuntu',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .blackTxtColor,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
                           : Container()
                     ],
                   ),
                   onPressed: () {
                     cartTotalClear(context);
-                    Navigator.push(context, CupertinoPageRoute(
-                      builder: (context) => const Cart(fromBottom: false,),)).then((value) {setState;},);
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const Cart(
+                            fromBottom: false,
+                          ),
+                        )).then(
+                      (value) {
+                        setState;
+                      },
+                    );
                   },
                 ),
               );
@@ -380,454 +395,575 @@ class _CopGScreenState extends State<CopGScreen>
             selector: (_, HomePageProvider) => HomePageProvider.curCartCount,
           ),
         ],
-        bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              color: Theme.of(context).colorScheme.lightWhite,
-              padding: EdgeInsets.fromLTRB(
-                10,
-                context.watch<HomePageProvider>().getBars ? 10 : 30,
-                10,
-                0,
-              ),
-              child: GestureDetector(
-                child: SizedBox(
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 0.0),
-                    child: TextField(
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.fontColor,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      enabled: false,
-                      textAlign: TextAlign.left,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.lightWhite,
-                          ),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(circularBorderRadius10),
-                          ),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(circularBorderRadius10),
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.fromLTRB(15.0, 5.0, 0, 5.0),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(circularBorderRadius10),
-                          ),
-                        ),
-                        isDense: true,
-                        hintText: getTranslated(context, 'searchHint'),
-                        hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
-                          color: Theme.of(context).colorScheme.fontColor,
-                          fontSize: textFontSize12,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: SvgPicture.asset(
-                              DesignConfiguration.setSvgPath('homepage_search'),
-                              height: 15,
-                              width: 15,
-                              color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
-                          ),
-                        ),
-                        suffixIcon: Selector<ThemeNotifier, ThemeMode>(
-                          selector: (_, themeProvider) =>
-                              themeProvider.getThemeMode(),
-                          builder: (context, data, child) {
-                            return Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: (data == ThemeMode.system &&
-                                  MediaQuery.of(context).platformBrightness ==
-                                      Brightness.light) ||
-                                  data == ThemeMode.light
-                                  ? SvgPicture.asset(
-                                  DesignConfiguration.setSvgPath('voice_search'),
-                                  height: 15,
-                                  width: 15,
-                                  color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
-                              )
-                                  : SvgPicture.asset(
-                                  DesignConfiguration.setSvgPath(
-                                      'voice_search_white'),
-                                  height: 15,
-                                  width: 15,
-                                  color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
-                              ),
-                            );
-                          },
-                        ),
-                        fillColor: Theme.of(context).colorScheme.white,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                ),
-                onTap: () async {
-                  Routes.navigateToSearchScreen(context);
-                },
-              ),
-            ),
-          ),
-        ),
+        // bottom: PreferredSize(
+        //     preferredSize: const Size.fromHeight(4.0),
+        //   child: Align(
+        //     alignment: Alignment.topCenter,
+        //     child: Container(
+        //       color: Theme.of(context).colorScheme.lightWhite,
+        //       padding: EdgeInsets.fromLTRB(
+        //         10,
+        //         context.watch<HomePageProvider>().getBars ? 10 : 30,
+        //         10,
+        //         0,
+        //       ),
+        //       child: GestureDetector(
+        //         child: SizedBox(
+        //           height: 50,
+        //           child: Padding(
+        //             padding: const EdgeInsets.only(bottom: 0.0),
+        //             child: TextField(
+        //               style: TextStyle(
+        //                 color: Theme.of(context).colorScheme.fontColor,
+        //                 fontWeight: FontWeight.normal,
+        //               ),
+        //               enabled: false,
+        //               textAlign: TextAlign.left,
+        //               decoration: InputDecoration(
+        //                 focusedBorder: OutlineInputBorder(
+        //                   borderSide: BorderSide(
+        //                     color: Theme.of(context).colorScheme.lightWhite,
+        //                   ),
+        //                   borderRadius: const BorderRadius.all(
+        //                     Radius.circular(circularBorderRadius10),
+        //                   ),
+        //                 ),
+        //                 enabledBorder: const OutlineInputBorder(
+        //                   borderSide: BorderSide(color: Colors.transparent),
+        //                   borderRadius: BorderRadius.all(
+        //                     Radius.circular(circularBorderRadius10),
+        //                   ),
+        //                 ),
+        //                 contentPadding: const EdgeInsets.fromLTRB(15.0, 5.0, 0, 5.0),
+        //                 border: const OutlineInputBorder(
+        //                   borderSide: BorderSide(color: Colors.transparent),
+        //                   borderRadius: BorderRadius.all(
+        //                     Radius.circular(circularBorderRadius10),
+        //                   ),
+        //                 ),
+        //                 isDense: true,
+        //                 hintText: getTranslated(context, 'searchHint'),
+        //                 hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
+        //                   color: Theme.of(context).colorScheme.fontColor,
+        //                   fontSize: textFontSize12,
+        //                   fontWeight: FontWeight.w400,
+        //                   fontStyle: FontStyle.normal,
+        //                 ),
+        //                 prefixIcon: Padding(
+        //                   padding: const EdgeInsets.all(15.0),
+        //                   child: SvgPicture.asset(
+        //                       DesignConfiguration.setSvgPath('homepage_search'),
+        //                       height: 15,
+        //                       width: 15,
+        //                       color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
+        //                   ),
+        //                 ),
+        //                 suffixIcon: Selector<ThemeNotifier, ThemeMode>(
+        //                   selector: (_, themeProvider) =>
+        //                       themeProvider.getThemeMode(),
+        //                   builder: (context, data, child) {
+        //                     return Padding(
+        //                       padding: const EdgeInsets.all(10.0),
+        //                       child: (data == ThemeMode.system &&
+        //                           MediaQuery.of(context).platformBrightness ==
+        //                               Brightness.light) ||
+        //                           data == ThemeMode.light
+        //                           ? SvgPicture.asset(
+        //                           DesignConfiguration.setSvgPath('voice_search'),
+        //                           height: 15,
+        //                           width: 15,
+        //                           color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
+        //                       )
+        //                           : SvgPicture.asset(
+        //                           DesignConfiguration.setSvgPath(
+        //                               'voice_search_white'),
+        //                           height: 15,
+        //                           width: 15,
+        //                           color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
+        //                       ),
+        //                     );
+        //                   },
+        //                 ),
+        //                 fillColor: Theme.of(context).colorScheme.white,
+        //                 filled: true,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //         onTap: () async {
+        //           Routes.navigateToSearchScreen(context);
+        //         },
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ),
-
       drawer: get_drawer(context),
       key: _scaffoldKey,
       body: WillPopScope(
         onWillPop: onWillPopScope,
-        child:
-        isLoading == true? Center(child: CircularProgressIndicator()):
-        categoriesData?.data.length == 0? Container(
-            height: MediaQuery.of(context).size.height/1.2,
-            child: Center(child: Text("No Data found..!!", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,)))):
-        isNetworkAvail ?
-        DefaultTabController(
-          length: categoriesData!.data.length,
-                              child:  Column(
-                                children: [
-                                  ///tabs
-                                  Center(
-                                    child: Padding(
-                                      padding:  EdgeInsets.only(top: 8.0, bottom: 8),
-                                      child: Container(
-                                        height: 40,
-                                        child: ButtonsTabBar(
-                                            controller: tabController,
-                                            backgroundColor: Theme.of(context).colorScheme.fontColor,
-                                            unselectedBackgroundColor:  Theme.of(context).colorScheme.white,
-                                            duration: 0,
-                                            borderColor: Theme.of(context).colorScheme.white,
-                                            unselectedBorderColor: Theme.of(context).colorScheme.lightWhite,
-                                            borderWidth: 0,
-                                            contentPadding: const EdgeInsets.only(left: 18,right: 18,top: 8,bottom: 8),
-                                            radius: 30,
-                                            tabs: [
-                                              for(int i=0; i< categoriesData!.data.length; i++)
-                                              Tab(
-                                                child:  Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    CachedNetworkImage(imageUrl: '${categoriesData!.data[i].image}', height: 13,
-                                                      color: tabController.index == i? Theme.of(context).colorScheme.white  : Theme.of(context).colorScheme.fontColor,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    Text("${categoriesData!.data[i].name}",
-                                                      style: TextStyle(fontSize: 12,
-                                                         fontFamily: "trans_regular",
-                                                        fontWeight: tabController.index ==i? FontWeight.w600 : FontWeight.w400,
-                                                        color: tabController.index ==i? Theme.of(context).colorScheme.white  : Theme.of(context).colorScheme.fontColor,
-
-                                                      ),
-                                                    )
-                                                  ],
+        child: isLoading == true
+            ? Center(child: CircularProgressIndicator())
+            : categoriesData?.data.length == 0
+                ? Container(
+                    height: MediaQuery.of(context).size.height / 1.2,
+                    child: Center(
+                        child: Text("No Data found..!!",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.fontColor,
+                            ))))
+                : isNetworkAvail
+                    ? DefaultTabController(
+                        length: categoriesData!.data.length,
+                        child: Column(
+                          children: [
+                            ///tabs
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 8.0, bottom: 8),
+                                child: Container(
+                                  height: 40,
+                                  child: ButtonsTabBar(
+                                      controller: tabController,
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .fontColor,
+                                      unselectedBackgroundColor:
+                                          Theme.of(context).colorScheme.white,
+                                      duration: 0,
+                                      borderColor:
+                                          Theme.of(context).colorScheme.white,
+                                      unselectedBorderColor: Theme.of(context)
+                                          .colorScheme
+                                          .lightWhite,
+                                      borderWidth: 0,
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 18,
+                                          right: 18,
+                                          top: 8,
+                                          bottom: 8),
+                                      radius: 30,
+                                      tabs: [
+                                        for (int i = 0;
+                                            i < categoriesData!.data.length;
+                                            i++)
+                                          Tab(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageUrl:
+                                                      '${categoriesData!.data[i].image}',
+                                                  height: 13,
+                                                  color:
+                                                      tabController.index == i
+                                                          ? Theme.of(context)
+                                                              .colorScheme
+                                                              .white
+                                                          : Theme.of(context)
+                                                              .colorScheme
+                                                              .fontColor,
                                                 ),
-                                              ),
-                                            ],
-                                            onTap: (int index) {
-                                              setState(() {
-                                                tabController.index = index;
-                                                print("selected index is ${tabController.index}");
-
-                                                getProductsApi(tabController.index);
-                                                setState(() {});
-                                              });
-                                            }
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  ///views
-                                  Expanded(
-                                    child: TabBarView(
-                                      physics: const NeverScrollableScrollPhysics(),
-                                     controller: tabController,
-                                      children: [
-
-                                        for(int i=0; i< categoriesData!.data.length; i++)
-                                          categoriesData!.data[i].name.toLowerCase().contains('exclusive')?
-                                          exclusiveProductDesign() :
-                                          normalProductDesign(),
-
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  "${categoriesData!.data[i].name}",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontFamily: "trans_regular",
+                                                    fontWeight:
+                                                        tabController.index == i
+                                                            ? FontWeight.w600
+                                                            : FontWeight.w400,
+                                                    color:
+                                                        tabController.index == i
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .white
+                                                            : Theme.of(context)
+                                                                .colorScheme
+                                                                .fontColor,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
                                       ],
-                                    ),
-                                  )
+                                      onTap: (int index) {
+                                        setState(() {
+                                          tabController.index = index;
+                                          print(
+                                              "selected index is ${tabController.index}");
+
+                                          getProductsApi(tabController.index);
+                                          setState(() {});
+                                        });
+                                      }),
+                                ),
+                              ),
+                            ),
+
+                            ///views
+                            Expanded(
+                              child: TabBarView(
+                                physics: const NeverScrollableScrollPhysics(),
+                                controller: tabController,
+                                children: [
+                                  for (int i = 0;
+                                      i < categoriesData!.data.length;
+                                      i++)
+                                   categoriesData!.data[i].name.toLowerCase().contains('exclusive') ? exclusiveProductDesign() : normalProductDesign(),
                                 ],
                               ),
                             )
-            : NoInterNet(
-          buttonController: buttonController,
-          buttonSqueezeanimation: buttonSqueezeanimation,
-          setStateNoInternate: setStateNoInternate,
-        ),
+                          ],
+                        ),
+                      )
+                    : NoInterNet(
+                        buttonController: buttonController,
+                        buttonSqueezeanimation: buttonSqueezeanimation,
+                        setStateNoInternate: setStateNoInternate,
+                      ),
       ),
     );
   }
 
-  Widget exclusiveProductDesign(){
-     return  SingleChildScrollView(
-       child: Column(
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-           ///all product cards
-           const Section(),
-           SizedBox(height: 20,),
+  Widget exclusiveProductDesign() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ///all product cards
+          const Section(),
+          SizedBox(
+            height: 20,
+          ),
 
-           
-           ///exclusive items
+          ///exclusive items
 
-           Container(
-             alignment: Alignment.centerRight,
-             padding: const EdgeInsets.only(
-               right: 15.0,
-               left: 15.0,
-               bottom: 10,
-             ),
-             child: GestureDetector(
-               child: Text(
-                 getTranslated(context, 'SHOW ALL')!,
-                 style: Theme.of(context).textTheme.caption!.copyWith(
-                   color: Theme.of(context).colorScheme.fontColor,
-                   fontSize:13,
-                   fontWeight: FontWeight.bold,
-                   fontStyle: FontStyle.normal,
-                   fontFamily: 'ubuntu',
-                 ),
-               ),
-               onTap: () {
-                 // SectionModel model = context.read<HomePageProvider>().sectionList[index];
-                 //
-                 // Navigator.push(
-                 //   context,
-                 //   CupertinoPageRoute(
-                 //     builder: (context) => SectionList(
-                 //       index: index,
-                 //       section_model: model,
-                 //       from: title ==
-                 //           getTranslated(context, 'You might also like')!
-                 //           ? 2
-                 //           : 1,
-                 //       productList: productList,
-                 //     ),
-                 //   ),
-                 // );
-               },
-             ),
-           ),
-           Column(
-             children: [
-               Row(
-                 children: [
-                   if(ProductList.length > 0)
-                   GestureDetector(
-                     onTap:() {
-                       Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail(model: tempList[0],  secPos: 0, index: 0, list: true)),);
-                       // Navigator.push(context, PageRouteBuilder(
-                       //       pageBuilder: (_, __, ___) => ProductDetail(model: tempList[0], fromExclusive:true, secPos: 0, index: 0, list: true)),
-                       // );
-                     },
-                     child: Container(
-                       height: 350,
-                       width: MediaQuery.of(context).size.width/2,
-                       child: CachedNetworkImage(imageUrl: '${ProductList[0]['image']}', fit: BoxFit.cover,),
-                     ),
-                   ),
-                   Column(
-                     children: [
-                       if(ProductList.length > 1)
-                         GestureDetector(
-                           onTap:() {
-                             Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail(model: tempList[1],  secPos: 0, index: 0, list: true)),);
-
-                             // Navigator.push(context, PageRouteBuilder(
-                             //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[1], fromExclusive:true,  secPos: 0, index: 1, list: true)),
-                             // );
-                           },
-                           child: Container(
-                           height: 350/2,
-                           width: MediaQuery.of(context).size.width/2,
-                             child: CachedNetworkImage(imageUrl: '${ProductList[1]['image']}', fit: BoxFit.cover,),
-                       ),
-                         ),
-                       if(ProductList.length > 2)
-                         GestureDetector(
-                           onTap:() {
-                             Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail(model: tempList[2],  secPos: 0, index: 0, list: true)),);
-                             // Navigator.push(context, PageRouteBuilder(
-                             //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[2],  fromExclusive:true, secPos: 0, index: 2, list: true)),
-                             // );
-                           },
-                           child: Container(
-                           height: 350/2,
-                           width: MediaQuery.of(context).size.width/2,
-                             child: CachedNetworkImage(imageUrl: '${ProductList[2]['image']}', fit: BoxFit.cover,),
-                       ),
-                         ),
-                     ],
-                   ),
-                 ],
-               ),
-               Row(
-                 children: [
-                   if(ProductList.length > 3)
-                     GestureDetector(
-                       onTap:() {
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail(model: tempList[3],  secPos: 0, index: 0, list: true)),);
-                         // Navigator.push(context, PageRouteBuilder(
-                         //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[3], fromExclusive:true,  secPos: 0, index: 3, list: true)),
-                         // );
-                       },
-                       child: Container(
-                       height: 350/2,
-                       width: MediaQuery.of(context).size.width/2,
-                         child: CachedNetworkImage(imageUrl: '${ProductList[3]['image']}', fit: BoxFit.cover,),
-                   ),
-                     ),
-                   if(ProductList.length > 4)
-                     GestureDetector(
-                       onTap:() {
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail(model: tempList[4],  secPos: 0, index: 0, list: true)),);
-                         // Navigator.push(context, PageRouteBuilder(
-                         //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[4], fromExclusive:true,  secPos: 0, index: 4, list: true)),
-                         // );
-                       },
-                       child: Container(
-                       height: 350/2,
-                       width: MediaQuery.of(context).size.width/2,
-                         child: CachedNetworkImage(imageUrl: '${ProductList[4]['image']}', fit: BoxFit.cover,),
-                   ),
-                     ),
-
-                 ],
-               ),
-             ],
-           ),
-           const SizedBox(height: 40,),
-
-           CustomSlider(),
-
-           SizedBox(height: 20,),
-         ],
-       ),
-     );
-}
-
-  Widget normalProductDesign(){
-
-    return ListView.builder(
-        itemCount: ProductList.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index){
-
-      return  GestureDetector(
-        onTap: (){
-
-          Navigator.push(
-            context,
-            PageRouteBuilder(pageBuilder: (_, __, ___) => ProductDetail(model: tempList[index],from3dProduct:true, secPos: 0, index: index, list: true)),
-          );
-
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailAnimation(index: index, )));
-        },
-        child: Stack(
-          children: [
-
-            Padding(
-              padding: const EdgeInsets.only(left: 40, right: 100, top: 10),
-              child: Container(
-                height: 300,
-                width: MediaQuery.of(context).size.width/1.5,
-                decoration: BoxDecoration(
-                    color: index % 2 == 0 ? Color(0xff363638) : Color(0xff636366),
-                    borderRadius: BorderRadius.circular(15)
-                ),
-              ),
+          Container(
+            color:colors.primary,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(
+              right: 15.0,
+              left: 15.0,
+              bottom: 10,
             ),
-
-            Positioned(
-              left: MediaQuery.of(context).size.width/3.3,
-              top: 80,
-              child: SizedBox(
-                width: 270,
-                child: Hero(
-                  tag: 'tag1${index}',
-                  transitionOnUserGestures: true,
-                  child: FadeTransition(
-                    opacity: Tween<double>(begin: 0, end: 1).animate(ModalRoute.of(context)?.animation ?? const AlwaysStoppedAnimation(1)),
-                    child: FadeTransition(
-                      opacity: Tween<double>(begin: 1, end: 0).animate(ModalRoute.of(context)?.secondaryAnimation ?? const AlwaysStoppedAnimation(1)),
-                      child: CachedNetworkImage(imageUrl: '${ProductList[index]['other_images'][1]}', fit: BoxFit.cover,),
-                    ),
-                  ),
-                )
-              ),
-            ),
-
-            Positioned(
-              left: 60,
-              top: 30,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${ProductList[index]['name']}',
-                    style:  TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'ubuntu',
+            child: GestureDetector(
+              child: Text(
+                getTranslated(context, 'SHOW ALL')!,
+                style: Theme.of(context).textTheme.caption!.copyWith(
                       color: Theme.of(context).colorScheme.fontColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.normal,
+                      fontFamily: 'ubuntu',
                     ),
-                  ),
-                  SizedBox(height: 10,),
-                  Row(
+              ),
+              onTap: () {
+                // SectionModel model = context.read<HomePageProvider>().sectionList[index];
+                //
+                // Navigator.push(
+                //   context,
+                //   CupertinoPageRoute(
+                //     builder: (context) => SectionList(
+                //       index: index,
+                //       section_model: model,
+                //       from: title ==
+                //           getTranslated(context, 'You might also like')!
+                //           ? 2
+                //           : 1,
+                //       productList: productList,
+                //     ),
+                //   ),
+                // );
+              },
+            ),
+          ),
+          Column(
+            children: [
+              Row(
+                children: [
+                  if (ProductList.length > 0)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductDetail(
+                                  model: tempList[0],
+                                  secPos: 0,
+                                  index: 0,
+                                  list: true)),
+                        );
+                        // Navigator.push(context, PageRouteBuilder(
+                        //       pageBuilder: (_, __, ___) => ProductDetail(model: tempList[0], fromExclusive:true, secPos: 0, index: 0, list: true)),
+                        // );
+                      },
+                      child: Container(
+                        height: 350,
+                        color:colors.primary,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: CachedNetworkImage(
+                          imageUrl: '${ProductList[0]['image']}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  Column(
                     children: [
-                      Image.asset('assets/images/rupee.png', height: 13,),
-                      Text(
-                        '${ProductList[index]['min_max_price']['special_price']}',
-                        style:  TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'ubuntu',
-                          color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5),
+                      if (ProductList.length > 1)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProductDetail(
+                                      model: tempList[1],
+                                      secPos: 0,
+                                      index: 0,
+                                      list: true)),
+                            );
+
+                            // Navigator.push(context, PageRouteBuilder(
+                            //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[1], fromExclusive:true,  secPos: 0, index: 1, list: true)),
+                            // );
+                          },
+                          child: Container(
+                            color:colors.primary,
+                            height: 350 / 2,
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: CachedNetworkImage(
+                              imageUrl: '${ProductList[1]['image']}',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 10,),
-                      Image.asset('assets/images/rupee.png', height: 13,),
-                      Text(
-                        '${ProductList[index]['min_max_price']['max_price']}',
-                        style:  TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'ubuntu',
-                          decoration: TextDecoration.lineThrough,
-                          color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5),
+                      if (ProductList.length > 2)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProductDetail(
+                                      model: tempList[2],
+                                      secPos: 0,
+                                      index: 0,
+                                      list: true)),
+                            );
+                            // Navigator.push(context, PageRouteBuilder(
+                            //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[2],  fromExclusive:true, secPos: 0, index: 2, list: true)),
+                            // );
+                          },
+                          child: Container(
+                            height: 350 / 2,
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: CachedNetworkImage(
+                              imageUrl: '${ProductList[2]['image']}',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  if (ProductList.length > 3)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductDetail(
+                                  model: tempList[3],
+                                  secPos: 0,
+                                  index: 0,
+                                  list: true)),
+                        );
+                        // Navigator.push(context, PageRouteBuilder(
+                        //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[3], fromExclusive:true,  secPos: 0, index: 3, list: true)),
+                        // );
+                      },
+                      child: Container(
+                        height: 350 / 2,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: CachedNetworkImage(
+                          imageUrl: '${ProductList[3]['image']}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  if (ProductList.length > 4)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductDetail(
+                                  model: tempList[4],
+                                  secPos: 0,
+                                  index: 0,
+                                  list: true)),
+                        );
+                        // Navigator.push(context, PageRouteBuilder(
+                        //     pageBuilder: (_, __, ___) => ProductDetail(model: tempList[4], fromExclusive:true,  secPos: 0, index: 4, list: true)),
+                        // );
+                      },
+                      child: Container(
+                        height: 350 / 2,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: CachedNetworkImage(
+                          imageUrl: '${ProductList[4]['image']}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+
+          CustomSlider(),
+
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget normalProductDesign() {
+    return ListView.builder(
+        itemCount: ProductList.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => ProductDetail(
+                        model: tempList[index],
+                        from3dProduct: true,
+                        secPos: 0,
+                        index: index,
+                        list: true)),
+              );
+
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailAnimation(index: index, )));
+            },
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 40, right: 100, top: 10),
+                  child: Container(
+
+                    height: 300,
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    decoration: BoxDecoration(
+                        color: index % 2 == 0
+                            ? Color(0xff363638)
+                            : Color(0xff636366),
+                        borderRadius: BorderRadius.circular(15)),
+                  ),
+                ),
+                Positioned(
+                  left: MediaQuery.of(context).size.width / 3.3,
+                  top: 80,
+                  child: SizedBox(
+                      width: 270,
+                      child: Hero(
+                        tag: 'tag1${index}',
+                        transitionOnUserGestures: true,
+                        child: FadeTransition(
+                          opacity: Tween<double>(begin: 0, end: 1).animate(
+                              ModalRoute.of(context)?.animation ??
+                                  const AlwaysStoppedAnimation(1)),
+                          child: FadeTransition(
+                            opacity: Tween<double>(begin: 1, end: 0).animate(
+                                ModalRoute.of(context)?.secondaryAnimation ??
+                                    const AlwaysStoppedAnimation(1)),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  '${ProductList[index]['other_images'][1]}',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      )),
+                ),
+                Positioned(
+                  left: 60,
+                  top: 30,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${ProductList[index]['name']}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'ubuntu',
+                          color: Theme.of(context).colorScheme.fontColor,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/rupee.png',
+                            height: 13,
+                          ),
+                          Text(
+                            '${ProductList[index]['min_max_price']['special_price']}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ubuntu',
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .fontColor
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Image.asset(
+                            'assets/images/rupee.png',
+                            height: 13,
+                          ),
+                          Text(
+                            '${ProductList[index]['min_max_price']['max_price']}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'ubuntu',
+                              decoration: TextDecoration.lineThrough,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .fontColor
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          );
+        });
 
-
-
-          ],
-        ),
-      );
-    });
     ///static
     // return ListView.builder(
     //     itemCount:5,
@@ -947,9 +1083,7 @@ class _CopGScreenState extends State<CopGScreen>
     // );
   }
 
-
-
-        ///
+  ///
 //           RefreshIndicator(
 //             color: Theme.of(context).colorScheme.fontColor,
 //             key: _refreshIndicatorKey,
@@ -1432,9 +1566,6 @@ class _CopGScreenState extends State<CopGScreen>
 //             ),
 //           )
 
-
-
-
   Future<void> _refresh() {
     context.read<HomePageProvider>().catLoading = true;
     context.read<HomePageProvider>().secLoading = true;
@@ -1451,7 +1582,7 @@ class _CopGScreenState extends State<CopGScreen>
   Future<void> callApi() async {
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
     SettingProvider setting =
-    Provider.of<SettingProvider>(context, listen: false);
+        Provider.of<SettingProvider>(context, listen: false);
 
     user.setUserId(setting.userId);
 
@@ -1467,7 +1598,7 @@ class _CopGScreenState extends State<CopGScreen>
     } else {
       if (mounted) {
         setState(
-              () {
+          () {
             isNetworkAvail = false;
           },
         );
@@ -1479,13 +1610,13 @@ class _CopGScreenState extends State<CopGScreen>
   void getSetting() {
     CUR_USERID = context.read<SettingProvider>().userId;
     context.read<SystemProvider>().getSystemSettings(userID: CUR_USERID).then(
-          (systemConfigData) async {
+      (systemConfigData) async {
         if (!systemConfigData['error']) {
           //
           //Tag list from system API
           if (systemConfigData['tagList'] != null) {
             context.read<SearchProvider>().tagList =
-            systemConfigData['tagList'];
+                systemConfigData['tagList'];
           }
           //check whether app is under maintenance
           if (systemConfigData['isAppUnderMaintenance'] == '1') {
@@ -1537,7 +1668,7 @@ class _CopGScreenState extends State<CopGScreen>
         }
       },
     ).onError(
-          (error, stackTrace) {
+      (error, stackTrace) {
         setSnackbar(error.toString(), context);
       },
     );
@@ -1558,9 +1689,10 @@ class _CopGScreenState extends State<CopGScreen>
             var parameter = {'product_ids': proIds.join(',')};
 
             Response response =
-            await post(getProductApi, body: parameter, headers: headers)
-                .timeout(const Duration(seconds: timeOut));
-            print('______dddddddddddddddddddd____${getProductApi}____${parameter}_____');
+                await post(getProductApi, body: parameter, headers: headers)
+                    .timeout(const Duration(seconds: timeOut));
+            print(
+                '______dddddddddddddddddddd____${getProductApi}____${parameter}_____');
 
             var getdata = json.decode(response.body);
             bool error = getdata['error'];
@@ -1568,7 +1700,7 @@ class _CopGScreenState extends State<CopGScreen>
               var data = getdata['data'];
 
               List<Product> tempList =
-              (data as List).map((data) => Product.fromJson(data)).toList();
+                  (data as List).map((data) => Product.fromJson(data)).toList();
 
               context.read<FavoriteProvider>().setFavlist(tempList);
             }
@@ -1613,7 +1745,7 @@ class _CopGScreenState extends State<CopGScreen>
     };
 
     apiBaseHelper.postAPICall(validateReferalApi, parameter).then(
-          (getdata) {
+      (getdata) {
         bool error = getdata['error'];
         if (!error) {
           REFER_CODE = refer;
@@ -1646,12 +1778,12 @@ class _CopGScreenState extends State<CopGScreen>
         highlightColor: Theme.of(context).colorScheme.simmerHigh,
         child: SingleChildScrollView(
             child: Column(
-              children: [
-                HorizontalCategoryList.catLoading(context),
-                sliderLoading(),
-                Section.sectionLoadingShimmer(context),
-              ],
-            )),
+          children: [
+            HorizontalCategoryList.catLoading(context),
+            sliderLoading(),
+            Section.sectionLoadingShimmer(context),
+          ],
+        )),
       ),
     );
   }
@@ -1680,12 +1812,12 @@ class _CopGScreenState extends State<CopGScreen>
     _playAnimation();
 
     Future.delayed(const Duration(seconds: 2)).then(
-          (_) async {
+      (_) async {
         isNetworkAvail = await isNetworkAvailable();
         if (isNetworkAvail) {
           if (mounted) {
             setState(
-                  () {
+              () {
                 isNetworkAvail = true;
               },
             );
@@ -1727,10 +1859,10 @@ class _CopGScreenState extends State<CopGScreen>
 class SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
-      BuildContext context,
-      double shrinkOffset,
-      bool overlapsContent,
-      ) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
@@ -1778,19 +1910,21 @@ class SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                   isDense: true,
                   hintText: getTranslated(context, 'searchHint'),
                   hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
-                    color: Theme.of(context).colorScheme.fontColor,
-                    fontSize: textFontSize12,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
+                        color: Theme.of(context).colorScheme.fontColor,
+                        fontSize: textFontSize12,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                      ),
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: SvgPicture.asset(
-                      DesignConfiguration.setSvgPath('homepage_search'),
-                      height: 15,
-                      width: 15,
-                        color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
-                    ),
+                        DesignConfiguration.setSvgPath('homepage_search'),
+                        height: 15,
+                        width: 15,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .fontColor
+                            .withOpacity(0.5)),
                   ),
                   suffixIcon: Selector<ThemeNotifier, ThemeMode>(
                     selector: (_, themeProvider) =>
@@ -1799,22 +1933,26 @@ class SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: (data == ThemeMode.system &&
-                            MediaQuery.of(context).platformBrightness ==
-                                Brightness.light) ||
-                            data == ThemeMode.light
+                                    MediaQuery.of(context).platformBrightness ==
+                                        Brightness.light) ||
+                                data == ThemeMode.light
                             ? SvgPicture.asset(
-                          DesignConfiguration.setSvgPath('voice_search'),
-                          height: 15,
-                          width: 15,
-                            color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
-                        )
+                                DesignConfiguration.setSvgPath('voice_search'),
+                                height: 15,
+                                width: 15,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .fontColor
+                                    .withOpacity(0.5))
                             : SvgPicture.asset(
-                          DesignConfiguration.setSvgPath(
-                              'voice_search_white'),
-                          height: 15,
-                          width: 15,
-                           color: Theme.of(context).colorScheme.fontColor.withOpacity(0.5)
-                        ),
+                                DesignConfiguration.setSvgPath(
+                                    'voice_search_white'),
+                                height: 15,
+                                width: 15,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .fontColor
+                                    .withOpacity(0.5)),
                       );
                     },
                   ),

@@ -145,14 +145,15 @@ bool isCheck = false;
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.lightWhite,
+
+     backgroundColor: colors.primary,
 
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20,),
+              SizedBox(height: 2,),
                 Container(
-                height: 100,
+                height: 110,
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.lightWhite,
                     borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft: Radius.circular(10))
@@ -160,7 +161,7 @@ bool isCheck = false;
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 10,top: 10),
                       child: Row(
                         children: [
                           InkWell(
@@ -178,7 +179,7 @@ bool isCheck = false;
                     SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(left: 20,right: 20),
-                      child: Image.asset("assets/images/details.png",height: 50,),
+                      child: Image.asset("assets/images/details.png",height: 50,color: colors.whiteTemp,),
                     ),
                     Divider(
                       color: colors.black54.withOpacity(0.2),
@@ -204,7 +205,8 @@ bool isCheck = false;
                         width: 40,
                         imageUrl: "${widget.catImage}",
                         fit: BoxFit.fill,
-                        color: Theme.of(context).colorScheme.blackTxtColor,
+                        color: colors.whiteTemp
+                        //Theme.of(context).colorScheme.blackTxtColor,
                       ),
                       // Image.asset("assets/images/nikerighrt.png",height: 50,  color: Theme.of(context).colorScheme.fontColor,)
                     ],
@@ -221,7 +223,8 @@ bool isCheck = false;
                 children: [
                   Theme(
                     data: Theme.of(context).copyWith(
-                      unselectedWidgetColor: Theme.of(context).colorScheme.blackTxtColor,
+                      unselectedWidgetColor:
+                      Theme.of(context).colorScheme.blackTxtColor,
                     ),
                     child: Checkbox(
                         value: isCheck,
@@ -434,7 +437,7 @@ bool isCheck = false;
                                       print("appearance_______________$appearance");
                                     },
                                     icon: Icon(
-                                        Icons.add_circle_outlined,color: Theme.of(context).colorScheme.gray,)),
+                                        Icons.add_circle_outlined,color: Theme.of(context).colorScheme.fontColor,)),
                               ),
                             ),
                           ],
@@ -449,7 +452,7 @@ bool isCheck = false;
                               decoration: BoxDecoration(
 
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("Appearance", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("Appearance", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),
@@ -526,7 +529,7 @@ bool isCheck = false;
                                       inside_label = await scanQR();
                                     },
                                     icon: Icon(
-                                        Icons.add_circle_outlined,color: Theme.of(context).colorScheme.gray,)),
+                                        Icons.add_circle_outlined,color: Theme.of(context).colorScheme.fontColor,)),
                               ),
                             ),
                           ],
@@ -541,7 +544,7 @@ bool isCheck = false;
                               decoration: BoxDecoration(
 
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("inside label", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("inside label", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),
@@ -605,7 +608,7 @@ bool isCheck = false;
 
                                     },
                                     icon: Icon(
-                                        Icons.add_circle_outlined, color: Theme.of(context).colorScheme.gray,)),
+                                        Icons.add_circle_outlined, color: Theme.of(context).colorScheme.fontColor,)),
                               ),
                             ),
                           ],
@@ -620,7 +623,7 @@ bool isCheck = false;
                               decoration: BoxDecoration(
 
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("insole", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("insole", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),
@@ -701,7 +704,7 @@ bool isCheck = false;
                                         ///scanning barcode
                                         insole_stitc = await scanQR();
                                       },
-                                      icon: Icon(Icons.add_circle, color: Theme.of(context).colorScheme.gray,)),
+                                      icon: Icon(Icons.add_circle, color: Theme.of(context).colorScheme.fontColor,)),
                                 ),
                               ),
                             ],
@@ -717,7 +720,7 @@ bool isCheck = false;
                               decoration: BoxDecoration(
 
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("insole stitc..", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("insole stitc..", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),
@@ -794,7 +797,7 @@ bool isCheck = false;
                                       },
                                       icon: Icon(
                                         Icons.add_circle_outlined,
-                                        color: Theme.of(context).colorScheme.gray,
+                                        color: Theme.of(context).colorScheme.fontColor,
                                       )),
                                 ),
                               ),
@@ -810,7 +813,7 @@ bool isCheck = false;
                               height: MediaQuery.of(context).size.height / 40,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("Box label", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("Box label", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),
@@ -880,7 +883,7 @@ bool isCheck = false;
 
                                       },
                                       icon: Icon(
-                                          Icons.add_circle_outlined, color: Theme.of(context).colorScheme.gray,)),
+                                          Icons.add_circle_outlined, color: Theme.of(context).colorScheme.fontColor,)),
                                 ),
                               ),
                             ],
@@ -896,7 +899,7 @@ bool isCheck = false;
                               decoration: BoxDecoration(
 
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("Data code", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("Data code", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),
@@ -971,7 +974,7 @@ bool isCheck = false;
                                           additional = await  text(XFile(di!.path.toString()));
                                       },
                                       icon: Icon(
-                                          Icons.add_circle_outlined, color: Theme.of(context).colorScheme.gray,)),
+                                          Icons.add_circle_outlined, color: Theme.of(context).colorScheme.fontColor,)),
                                 ),
                               ),
                             ],
@@ -987,7 +990,7 @@ bool isCheck = false;
                               decoration: BoxDecoration(
 
                                   borderRadius: BorderRadius.circular(30)),
-                              child: Center(child: Text("Additonal", style: TextStyle(color: Theme.of(context).colorScheme.gray,),))),
+                              child: Center(child: Text("Additonal", style: TextStyle(color: Theme.of(context).colorScheme.fontColor,),))),
                         )
                       // ElevatedButton(onPressed: (){}, child: Text("Appearance")),
                     ),

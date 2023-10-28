@@ -63,6 +63,7 @@ class StatePrivacy extends State<PrivacyPolicy> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       key: _scaffoldKey,
       appBar: getSimpleAppBar(widget.title!, context),
       body: Consumer<SystemProvider>(builder: (context, value, child) {

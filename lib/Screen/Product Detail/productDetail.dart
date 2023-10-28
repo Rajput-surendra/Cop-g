@@ -569,8 +569,9 @@ class StateItem extends State<ProductDetail> with TickerProviderStateMixin {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+
       key: _scaffoldKey,
-      backgroundColor: isBottom ? Colors.transparent.withOpacity(0.5) : Theme.of(context).canvasColor,
+      backgroundColor: isBottom ? Colors.transparent.withOpacity(0.5) : colors.primary,
       body:  _showContent(),
       // isNetworkAvail
       //     ? Stack(

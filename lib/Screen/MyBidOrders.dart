@@ -78,6 +78,7 @@ class _MyBidOrdersState extends State<MyBidOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       body: loading == true
           ? Center(
           child: CupertinoActivityIndicator(

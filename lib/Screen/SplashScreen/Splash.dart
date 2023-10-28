@@ -61,6 +61,7 @@ class _SplashScreen extends State<Splash> with TickerProviderStateMixin {
     deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+        backgroundColor: colors.primary,
        body: Stack(
           children: [
             Image.asset(

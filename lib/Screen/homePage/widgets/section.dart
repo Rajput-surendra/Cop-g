@@ -102,7 +102,7 @@ class Section extends StatelessWidget {
                                 horizontal: 20, vertical: 5),
                             width: double.infinity,
                             height: 18.0,
-                            color: colors.whiteTemp,
+                            color: colors.primary,
                           ),
                           GridView.count(
                             padding: const EdgeInsets.symmetric(
@@ -374,8 +374,9 @@ class SingleSectionContainer extends StatelessWidget {
                   children: List.generate(
                     productList.length < 4 ? productList.length : 4,
                     (productIndex) {
-                      return Card(
-                        elevation: 3,
+                      return  Card(
+                        elevation: 0,
+                        color: colors.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         child: SingleProductContainer(
                           sectionPosition: index,

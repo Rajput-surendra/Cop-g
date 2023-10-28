@@ -85,6 +85,7 @@ class _AllItemsState extends State<AllItems> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: colors.primary,
       body: Consumer<FavoriteProvider>(
         builder: (context, value, child) {
           if (value.getCurrentStatus == FavStatus.isSuccsess) {

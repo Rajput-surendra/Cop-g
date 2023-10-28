@@ -55,6 +55,7 @@ void initState() {
   }
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: getSimpleAppBar(getTranslated(context, 'BIDDING_PRODUCT_LIST')!, context),
       body: SingleChildScrollView(
         child: Column(

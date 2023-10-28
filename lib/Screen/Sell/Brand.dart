@@ -46,21 +46,22 @@ class _BrandScreenState extends State<BrandScreen> {
   }
   Widget build(BuildContext context) {
     return  SafeArea(
+      top: true,bottom: false,
       child: Scaffold(
-
-
+        //backgroundColor: colors.primary,
       // appBar: AppBar(
         //   toolbarHeight: 80,
         // ),
         // appBar: getSimpleAppBar(getTranslated(context, 'BRAND')!, context),
         body: Container(
-          color: Theme.of(context).colorScheme.lightWhite,
+          color:colors.primary,
+          //Theme.of(context).colorScheme.lightWhite,
 
           child: Column(
             children: [
-              SizedBox(height: 20,),
+              SizedBox(height: 2,),
               Container(
-                height: 100,
+                height: 110,
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.lightWhite,
 
@@ -69,7 +70,7 @@ class _BrandScreenState extends State<BrandScreen> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 10,top: 10),
                       child: Row(
                         children: [
                           InkWell(
@@ -86,7 +87,7 @@ class _BrandScreenState extends State<BrandScreen> {
                     SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.only(left: 20,right: 20),
-                      child: Image.asset("assets/images/brand.png",height: 50,  ),
+                      child: Image.asset("assets/images/brand.png",height: 50, color: colors.whiteTemp, ),
                     ),
                     Divider(
                       color: colors.black54.withOpacity(0.2),

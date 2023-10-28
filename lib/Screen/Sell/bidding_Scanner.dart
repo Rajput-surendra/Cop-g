@@ -60,6 +60,7 @@ class _BiddingProductState extends State<BiddingProduct> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
           appBar: getSimpleAppBar(getTranslated(context, 'BIDDING_PRODUCT')!, context),
       body: SingleChildScrollView(
         child: Padding(

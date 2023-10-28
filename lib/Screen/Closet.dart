@@ -76,6 +76,7 @@ class _ClosetState extends State<Closet> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      backgroundColor: colors.primary,
         body: Consumer<FavoriteProvider>(
           builder: (context, value, child) {
             if (value.getCurrentStatus == FavStatus.isSuccsess) {

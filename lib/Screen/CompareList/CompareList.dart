@@ -2,6 +2,7 @@ import 'package:eshop_multivendor/Model/Section_Model.dart';
 import 'package:eshop_multivendor/Screen/Product%20Detail/productDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../Helper/Color.dart';
 import '../../Helper/String.dart';
 import '../../Provider/productDetailProvider.dart';
 import '../../widgets/appBar.dart';
@@ -47,6 +48,7 @@ class _CompareListState extends State<CompareList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colors.primary,
       appBar: getAppBar(
           getTranslated(context, 'COMPARE_PRO')!, context, setStateNow, false),
       body: Selector<ProductDetailProvider, List<Product>>(

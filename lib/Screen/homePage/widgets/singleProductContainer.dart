@@ -54,8 +54,9 @@ class SingleProductContainer extends StatelessWidget {
 
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(circularBorderRadius10),
-          color: Theme.of(context).colorScheme.white,
+         // borderRadius: BorderRadius.circular(circularBorderRadius10),
+          color: colors.primary
+          //Theme.of(context).colorScheme.white,
         ),
         margin: const EdgeInsetsDirectional.only(bottom: 2, end: 2),
         child: InkWell(
@@ -273,7 +274,8 @@ class SingleProductContainer extends StatelessWidget {
                 right: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.white,
+                    color: colors.primary,
+                    //Theme.of(context).colorScheme.primary,
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(circularBorderRadius10),
                       topRight: Radius.circular(circularBorderRadius8),

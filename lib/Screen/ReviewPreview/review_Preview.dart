@@ -48,6 +48,7 @@ class StatePreview extends State<ReviewPreview> {
                       .index!];
         }
         return Scaffold(
+          backgroundColor: colors.primary,
           body: Hero(
             tag: '${reviewPreviewProvider.index} $heroTagUniqueString',
             child: Stack(
